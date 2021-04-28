@@ -39,6 +39,22 @@ def play_theme_song(user):
     return True
 
 
+# We sometimes need to look up objects based on HTTP headers.
+# This method centralises that logic so we're only looking at the HTTP headers in a single place in this file
+def lookup_object_by_http_header(object_to_query, request):
+    user_provided_ip_address = request.META.get("HTTP_X_REAL_IP")
+    if user_provided_ip_address:
+        return object_to_query.objects.get(ip_address=user_provided_ip_address)
+    raise ObjectDoesNotExist
+
+
+def log_message_for_http_header(request):
+    user_provided_ip_address = request.META.get("HTTP_X_REAL_IP")
+    if user_provided_ip_address:
+        return "IP Address {}".format(user_provided_ip_address)
+    return "No IP Address provided"
+
+
 @api_auth
 def check_door_access(request, rfid_code, door_id=None):
     log_event("TEST.", "error", request)
@@ -82,30 +98,30 @@ def check_door_access(request, rfid_code, door_id=None):
             )
 
     else:
-        door_ip = request.META.get("HTTP_X_REAL_IP")
+        log_message_for_device = log_message_for_http_header(request)
 
         try:
-            door = Doors.objects.get(ip_address=door_ip)
+            door = lookup_object_by_http_header(Doors, request)
             door.checkin()
 
         except ObjectDoesNotExist:
             log_event(
-                "Tried to check access for door {} but none found. (or IP not set)".format(
-                    door_ip
+                "Tried to check access for door {} but none found.".format(
+                    log_message_for_device
                 ),
                 "error",
                 request,
             )
             print(
-                "Tried to check access for non existent door ({}) ip ({}).".format(
-                    door_id, door_ip
+                "Tried to check access for non existent door ({}).".format(
+                    log_message_for_device
                 )
             )
             return JsonResponse(
                 {
                     "access": False,
-                    "error": "Tried to check access for door {} but none found. (or IP not set)".format(
-                        door_ip
+                    "error": "Tried to check access for door {} but none found.".format(
+                        log_message_for_device
                     ),
                     "timestamp": round(time.time()),
                 }
