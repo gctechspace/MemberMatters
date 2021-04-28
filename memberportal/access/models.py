@@ -18,6 +18,9 @@ class AccessControlledDevice(models.Model):
     ip_address = models.GenericIPAddressField(
         "IP Address of device", unique=True, null=True, blank=True
     )
+    secret_key = models.CharField(
+        "Secret Key of device", null=True, unique=True, blank=True, max_length=100
+    )
     last_seen = models.DateTimeField(null=True)
     all_members = models.BooleanField("Members have access by default", default=False)
     locked_out = models.BooleanField("Maintenance lockout enabled", default=False)
