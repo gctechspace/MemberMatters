@@ -43,16 +43,22 @@ def play_theme_song(user):
 # This method centralises that logic so we're only looking at the HTTP headers in a single place in this file
 def lookup_object_by_http_header(object_to_query, request):
     user_provided_ip_address = request.META.get("HTTP_X_REAL_IP")
+    user_provided_secret_key = request.META.get("HTTP_X_DEVICE_SECRET")
     if user_provided_ip_address:
         return object_to_query.objects.get(ip_address=user_provided_ip_address)
+    elif user_provided_secret_key:
+        return object_to_query.objects.get(secret_key=user_provided_secret_key)
     raise ObjectDoesNotExist
 
 
 def log_message_for_http_header(request):
     user_provided_ip_address = request.META.get("HTTP_X_REAL_IP")
+    user_provided_secret_key = request.META.get("HTTP_X_DEVICE_SECRET")
     if user_provided_ip_address:
         return "IP Address {}".format(user_provided_ip_address)
-    return "No IP Address provided"
+    elif user_provided_secret_key:
+        return "Device Secret {}".format(user_provided_secret_key)
+    return "No IP Address or Device Secret provided"
 
 
 @api_auth
