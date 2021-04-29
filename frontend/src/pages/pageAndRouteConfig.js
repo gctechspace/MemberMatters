@@ -29,6 +29,14 @@ const PageAndRouteConfig = [
     component: () => import("pages/Dashboard"),
   },
   {
+    icon: icons.training,
+    to: "/training",
+    name: "Training",
+    loggedIn: true,
+    kiosk: true,
+    component: () => import("pages/Training"),
+  },
+  {
     icon: icons.webcams,
     to: "/webcams",
     name: "webcams",

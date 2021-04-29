@@ -12,6 +12,8 @@ export default {
   // all of these are for pages
   dashboard: pro ? "fad fa-columns" : "fas fa-columns",
   webcams: pro ? "fad fa-webcam" : "fas fa-camera",
+  training: pro ? "fal fa-chalkboard-teacher" : "fas fa-chalkboard-teacher",
+
 
   menu: pro ? "fal fa-bars" : "fas fa-bars",
   backButton: pro ? "fal fa-arrow-left" : "fas fa-arrow-left",
