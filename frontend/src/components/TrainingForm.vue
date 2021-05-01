@@ -5,8 +5,14 @@
         <div v-for="question in questions"  v-bind:key="question.id">
           
           <div v-if="question.type == 'radio'" class="q-pa-md">
-            {{question.question}}
-
+            <q-img
+            v-if="question.image"
+            :src="question.image"
+            spinner-color="primary"
+            spinner-size="82px"
+            style="height: 140px; max-width: 150px; marginBottom:10px"
+            />
+            <div class="text" style="marginBottom: 16px">{{question.question}}</div>
             <div class="q-gutter-sm">
               <div  v-for="option in question.options" v-bind:key="option.id">
                 <q-radio dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
@@ -16,12 +22,26 @@
 
           <div v-if="question.type == 'select'" class="q-px-sm q-pt-sm">
             <div class="q-gutter-sm">
+            <q-img
+            v-if="question.image"
+            :src="question.image"
+            spinner-color="primary"
+            spinner-size="82px"
+            style="height: 140px; max-width: 150px; marginBottom:10px"
+            />
               <q-select filled v-model="form[question.id]" :options="question.options" :label="question.question"></q-select>
             </div>
           </div>
 
           <div v-if="question.type == 'truefalse'" class="q-px-sm q-pt-sm">
-              <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
+            <q-img
+            v-if="question.image"
+            :src="question.image"
+            spinner-color="primary"
+            spinner-size="82px"
+            style="height: 140px; max-width: 150px; marginBottom:10px"
+            />
+            <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
           </div>
         </div>
       </div>

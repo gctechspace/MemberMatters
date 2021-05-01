@@ -15,7 +15,6 @@
       <div class="text-h6">{{device.name}}</div>
       <training-form :questions="device.questions" :name="device.name" :id="device.id" />
       </q-tab-panel>
-      
     </q-tab-panels>
   </q-page>
 </template>
@@ -41,7 +40,7 @@ export default {
         printer:null,
         accept:null  
       },
-      tab:"VacuumFormer",
+      tab:"home",
       devices:
       [
         {
@@ -50,8 +49,9 @@ export default {
           "questions":[
           {
             "type": "radio",
-            "question": "What is the colour of the laser cutter",
+            "question": "What is the colour of the laser cutter?",
             "id":"laserColor",
+            "image":"https://wiki.gctechspace.org/public/lasercutter.jpg",
             "options": [
               "red",
               "blue",
