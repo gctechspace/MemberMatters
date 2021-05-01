@@ -67,7 +67,7 @@ import Lodash from "lodash"
 export default {
   name: "TrainingForm",
   props: {
-    id:String,
+    id:Number,
     name:String,
     questions:Array
   },
@@ -102,7 +102,6 @@ export default {
     },
     formFunction: function () {
       var obj = {}
-
       this.questions.map(function(q) {
         obj[q.id] = null
       });
@@ -123,3 +122,39 @@ export default {
   max-width: 100vw;
 }
 </style>
+
+// Questions example
+//
+//        {
+//         "questions":[
+//           {
+//             "type": "radio",
+//             "question": "What is the colour of the laser cutter?",
+//             "id":"laserColor",
+//             "image":"https://wiki.gctechspace.org/public/lasercutter.jpg",
+//             "options": [
+//               "red",
+//               "blue",
+//               "orange",
+//               "purple"
+//             ],
+//             "answer": "red"
+//           },
+//           {
+//             "type": "select",
+//             "question": "where is the fire extinguisher?",
+//             "id":"fireextinguisher",
+//             "options": [
+//             "cupboard",
+//             "top shelf",
+//             "draw"
+//             ],
+//             "answer": "draw"
+//           },
+//           {
+//             "type": "truefalse",
+//             "question": "Can the laser cutter cut metal?",
+//             "id":"cutMetal",
+//             "answer": "false"
+//           }
+//           ]}
