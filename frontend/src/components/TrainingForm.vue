@@ -1,44 +1,43 @@
 <template>
   <div class="training-form">
-        <q-form v-bind:id="id" v-bind:name="name" v-bind="questions" v-bind:key="id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-          <div>
-            <div v-for="question in questions"  v-bind:key="question.id">
-              
-              <div v-if="question.type == 'radio'" class="q-pa-md">
-                {{question.question}}
+    <q-form v-bind:id="id" v-bind:name="name" v-bind="questions" v-bind:key="id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+      <div>
+        <div v-for="question in questions"  v-bind:key="question.id">
+          
+          <div v-if="question.type == 'radio'" class="q-pa-md">
+            {{question.question}}
 
-                <div class="q-gutter-sm">
-                  <div  v-for="option in question.options" v-bind:key="option.id">
-                    <q-radio dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
-                  </div>      
-                </div>
-              </div>
-
-              <div v-if="question.type == 'select'" class="q-px-sm q-pt-sm">
-                <div class="q-gutter-sm">
-                  <q-select filled v-model="form[question.id]" :options="question.options" :label="question.question"></q-select>
-                </div>
-              </div>
-
-              <div v-if="question.type == 'truefalse'" class="q-px-sm q-pt-sm">
-                  <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
-              </div>
+            <div class="q-gutter-sm">
+              <div  v-for="option in question.options" v-bind:key="option.id">
+                <q-radio dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
+              </div>      
             </div>
           </div>
 
-            <q-toggle v-model="form.accept" label="I accept the license and terms" />
-            <div>
-                <q-btn
-                :label="$t('button.submit')"
-                type="submit"
-                color="primary-btn"
-                :loading="buttonLoading"
-                :disable="buttonLoading"
-                />
-              <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <div v-if="question.type == 'select'" class="q-px-sm q-pt-sm">
+            <div class="q-gutter-sm">
+              <q-select filled v-model="form[question.id]" :options="question.options" :label="question.question"></q-select>
             </div>
-        </q-form>
- 
+          </div>
+
+          <div v-if="question.type == 'truefalse'" class="q-px-sm q-pt-sm">
+              <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
+          </div>
+        </div>
+      </div>
+
+      <q-toggle v-model="form.accept" label="I accept the license and terms" />
+      <div>
+          <q-btn
+          :label="$t('button.submit')"
+          type="submit"
+          color="primary-btn"
+          :loading="buttonLoading"
+          :disable="buttonLoading"
+          />
+        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+      </div>
+    </q-form>
   </div>
 </template>
 
@@ -50,7 +49,7 @@ export default {
   props: {
     id:String,
     name:String,
-    questions:Object
+    questions:Array
   },
   data() {
     return {
