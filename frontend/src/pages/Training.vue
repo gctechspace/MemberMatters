@@ -1,50 +1,62 @@
 <template>
   <q-page class="content-start justify-center q-mt-md">
-    <div class="row flex flex-center">
-      <p class="text-body1 col-12 text-center q-px-md q-pt-md">
-        {{ $t("training.pageDescription") }}
-      </p>
-    </div>
 
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-      <div>
-        <div v-for="question in questions"  v-bind:key="question.id">
-          
-          <div v-if="question.type == 'radio'" class="q-pa-md">
-            {{question.question}}
+    <q-tabs v-model="tab" class="text-primary">
+      <q-tab key="home" name="home" :icon="icons.info" label="Getting started" />
+      <q-tab v-for="device in devices"  v-bind:key="device.id" :name="device.name" :icon="icons.tools" :label="device.name" />
+    </q-tabs>
 
-            <div class="q-gutter-sm">
-              <div  v-for="option in question.options" v-bind:key="option.id">
-                <q-radio dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
-              </div>      
-            </div>
-          </div>
+    <q-tab-panels v-model="tab" animated>
 
-          <div v-if="question.type == 'select'" class="q-px-sm q-pt-sm">
-            <div class="q-gutter-sm">
-              <q-select filled v-model="form[question.id]" :options="question.options" :label="question.question"></q-select>
-            </div>
-          </div>
+      <q-tab-panel key="`welcome-tab`" name="home">
+      <div class="text-h6">Welcome to the training page</div>
+      Here you will find a variety of quizzes to prepare to be inducted in all our machines and devices
+      </q-tab-panel>
+      <q-tab-panel v-for="device in devices" v-bind:key="`${device.id}-tab`" :name="device.name">
+      <div class="text-h6">{{device.name}}</div>
 
-          <div v-if="question.type == 'truefalse'" class="q-px-sm q-pt-sm">
-              <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
-          </div>
-        </div>
-      </div>
-
-        <q-toggle v-model="accept" label="I accept the license and terms" />
-
+      <q-form v-bind:key="device.id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
         <div>
-            <q-btn
-            :label="$t('button.submit')"
-            type="submit"
-            color="primary-btn"
-            :loading="buttonLoading"
-            :disable="buttonLoading"
-            />
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <div v-for="question in device.questions"  v-bind:key="question.id">
+            
+            <div v-if="question.type == 'radio'" class="q-pa-md">
+              {{question.question}}
+
+              <div class="q-gutter-sm">
+                <div  v-for="option in question.options" v-bind:key="option.id">
+                  <q-radio dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
+                </div>      
+              </div>
+            </div>
+
+            <div v-if="question.type == 'select'" class="q-px-sm q-pt-sm">
+              <div class="q-gutter-sm">
+                <q-select filled v-model="form[question.id]" :options="question.options" :label="question.question"></q-select>
+              </div>
+            </div>
+
+            <div v-if="question.type == 'truefalse'" class="q-px-sm q-pt-sm">
+                <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
+            </div>
+          </div>
         </div>
+
+          <q-toggle v-model="accept" label="I accept the license and terms" />
+
+          <div>
+              <q-btn
+              :label="$t('button.submit')"
+              type="submit"
+              color="primary-btn"
+              :loading="buttonLoading"
+              :disable="buttonLoading"
+              />
+            <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          </div>
       </q-form>
+      </q-tab-panel>
+    </q-tab-panels>
+
   </q-page>
 </template>
 
@@ -65,36 +77,102 @@ export default {
         22: null,
         printer:null  
       },
-      questions:[
-      {
-        "type": "radio",
-        "question": "What is the colour of the laser cutter",
-        "id":"laserColor",
-        "options": [
-          "red",
-          "blue",
-          "orange",
-          "purple"
-        ],
-        "answer": "red"
-      },
-      {
-        "type": "select",
-        "question": "where is the fire extinguisher?",
-        "id":"fireextinguisher",
-        "options": [
-        "cupboard",
-        "top shelf",
-        "draw"
-        ],
-        "answer": "draw"
-      },
-      {
-        "type": "truefalse",
-        "question": "Can the laser cutter cut metal?",
-        "id":"cutMetal",
-        "answer": "false"
-      }
+      tab:"home",
+      devices:
+      [
+        {
+          id:"laserCutter",
+          name: "Laser Cutter",
+          "questions":[
+          {
+            "type": "radio",
+            "question": "What is the colour of the laser cutter",
+            "id":"laserColor",
+            "options": [
+              "red",
+              "blue",
+              "orange",
+              "purple"
+            ],
+            "answer": "red"
+          },
+          {
+            "type": "select",
+            "question": "where is the fire extinguisher?",
+            "id":"fireextinguisher",
+            "options": [
+            "cupboard",
+            "top shelf",
+            "draw"
+            ],
+            "answer": "draw"
+          },
+          {
+            "type": "truefalse",
+            "question": "Can the laser cutter cut metal?",
+            "id":"cutMetal",
+            "answer": "false"
+          }
+          ]
+        },
+        {
+          id:"3dPrinter",
+          name: "3D Printer",
+          "questions":[
+          {
+            "type": "radio",
+            "question": "What is the colour of the 3d printer",
+            "id":"3dPrinterColor",
+            "options": [
+              "red",
+              "blue",
+              "orange",
+              "purple"
+            ],
+            "answer": "red"
+          },
+          {
+            "type": "truefalse",
+            "question": "Can I use whipper snipper cord as filament?",
+            "id":"cordasfilament",
+            "answer": "false"
+          }
+          ]
+        },
+        {
+          id:"VacuumFormer",
+          name: "vacuum Former",
+          "questions":[
+          {
+            "type": "radio",
+            "question": "What plastic is most flexible?",
+            "id":"flexiblePlastic",
+            "options": [
+              "hips",
+              "acrylic",
+              "abs",
+              "pla"
+            ],
+            "answer": "hips"
+          },
+          {
+            "type": "select",
+            "question": "What is the easiest material to use on the 3d printer",
+            "options": [
+            "abs",
+            "pla",
+            "hips",
+            ],
+            "answer": "pla"
+          },
+          {
+            "type": "truefalse",
+            "question": "Can you use metal to vacuum form?",
+            "id":"vacuumMetal",
+            "answer": "false"
+          }
+          ]
+        }
       ]
     };
   },
