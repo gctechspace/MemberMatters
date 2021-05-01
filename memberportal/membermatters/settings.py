@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "api_billing",
     "corsheaders",
     "rest_framework",
+    "inductionquizzes"
 ]
 
 MIDDLEWARE = [
