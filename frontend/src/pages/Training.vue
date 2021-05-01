@@ -3,7 +3,7 @@
 
     <q-tabs v-model="tab" class="text-primary">
       <q-tab key="home" name="home" :icon="icons.info" label="Getting started" />
-      <q-tab v-for="device in devices"  v-bind:key="device.id" :name="device.name" :icon="icons.tools" :label="device.name" />
+      <q-tab v-for="device in devices"  v-bind:key="device.id" :name="device.id" :icon="icons.tools" :label="device.name" />
     </q-tabs>
 
     <q-tab-panels v-model="tab" animated>
@@ -12,7 +12,7 @@
       <div class="text-h6">Welcome to the training page</div>
       Here you will find a variety of quizzes to prepare to be inducted in all our machines and devices
       </q-tab-panel>
-      <q-tab-panel v-for="device in devices" v-bind:key="`${device.id}-tab`" :name="device.name">
+      <q-tab-panel v-for="device in devices" v-bind:key="`${device.id}-tab`" :name="device.id">
       <div class="text-h6">{{device.name}}</div>
 
       <q-form v-bind:key="device.id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
@@ -41,7 +41,7 @@
           </div>
         </div>
 
-          <q-toggle v-model="accept" label="I accept the license and terms" />
+          <q-toggle v-model="form.accept" label="I accept the license and terms" />
 
           <div>
               <q-btn
@@ -62,6 +62,7 @@
 
 <script>
 import icons from "../icons"
+import Lodash from "lodash"
 export default {
   name: "TrainingPage",
   data() {
@@ -75,7 +76,8 @@ export default {
       isPwd: true,
       form: {
         22: null,
-        printer:null  
+        printer:null,
+        accept:null  
       },
       tab:"home",
       devices:
@@ -188,9 +190,13 @@ export default {
     onSubmit() {
       console.log(this.form)
     },
+    onReset() {
+      console.log(this.form)
+    },
     formFunction: function () {
       var obj = {}
-      this.questions.map(function(q) {
+
+      this.devices[0].questions.map(function(q) {
         (obj[q.id] == "cutMetal") ? obj[q.id] = 10 : obj[q.id] = null
       });
       this.form = {...this.form, ...obj}
