@@ -15,7 +15,7 @@
             <div class="text" style="marginBottom: 16px">{{question.question}}</div>
             <div class="q-gutter-sm">
               <div  v-for="option in question.options" v-bind:key="option.id">
-                <q-radio dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
+                <q-radio lazy-rules="ondemand" dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
               </div>      
             </div>
           </div>

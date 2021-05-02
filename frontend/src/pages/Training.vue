@@ -16,6 +16,11 @@
       <training-form :questions="device.fields.questions.questions" :name="device.fields.name" :id="device.pk" />
       </q-tab-panel>
     </q-tab-panels>
+
+    <div id="editor">
+      <div v-html="compiledMarkdown"></div>
+    </div>
+
   </q-page>
 </template>
 
@@ -23,6 +28,7 @@
 import icons from "../icons"
 import Lodash from "lodash"
 import TrainingForm from "../components/TrainingForm"
+import marked from "marked"
 export default {
   name: "TrainingPage",
   components: { TrainingForm},
@@ -41,7 +47,8 @@ export default {
         accept:null  
       },
       tab:"home",
-      devices:[]
+      devices:[],
+      input: "My first line  \n ## My second line welcome  \nMy third line  \nMy last line"
     };
   },
   mounted() {
@@ -73,6 +80,9 @@ export default {
     icons() {
       return icons;
     },
+    compiledMarkdown: function() {
+      return marked(this.input, { sanitize: true });
+    }
   },
 };
 </script>
