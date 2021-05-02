@@ -17,8 +17,11 @@
       </q-tab-panel>
     </q-tab-panels>
 
+    <q-markdown :src="this.input"></q-markdown>
+
     <div id="editor">
-      <div v-html="compiledMarkdown"></div>
+      <textarea :value="input" @input="update"></textarea>
+
     </div>
 
   </q-page>
@@ -26,12 +29,11 @@
 
 <script>
 import icons from "../icons"
-import Lodash from "lodash"
 import TrainingForm from "../components/TrainingForm"
-import marked from "marked"
+import { QMarkdown } from '@quasar/quasar-ui-qmarkdown'
 export default {
   name: "TrainingPage",
-  components: { TrainingForm},
+  components: { TrainingForm, QMarkdown},
   data() {
     return {
       interval: 0,
@@ -48,7 +50,7 @@ export default {
       },
       tab:"home",
       devices:[],
-      input: "My first line  \n ## My second line welcome  \nMy third line  \nMy last line"
+      input: "My first line  \n My second line  \nMy third line  \nMy last line"
     };
   },
   mounted() {
@@ -74,15 +76,15 @@ export default {
       .catch((e) => {
         console.log(e);
       });
-    }
+    },
+    update: _.debounce(function(e) {
+      this.input = e.target.value;
+      }, 300)
   },
   computed: {  
     icons() {
       return icons;
     },
-    compiledMarkdown: function() {
-      return marked(this.input, { sanitize: true });
-    }
   },
 };
 </script>
