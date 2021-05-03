@@ -43,6 +43,10 @@
             />
             <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
           </div>
+
+          <div v-if="question.type == 'text'" class="q-px-sm q-pt-sm">
+            <q-markdown :src="question.text">{{question.text}}</q-markdown>
+          </div>
         </div>
       </div>
 
@@ -64,11 +68,13 @@
 <script>
 import icons from "../icons"
 import Lodash from "lodash"
+import { QMarkdown } from '@quasar/quasar-ui-qmarkdown'
 export default {
   name: "TrainingForm",
   props: {
     id:Number,
     name:String,
+    components:{QMarkdown},
     questions:Array
   },
   data() {
@@ -124,37 +130,41 @@ export default {
 </style>
 
 // Questions example
-//
-//        {
-//         "questions":[
-//           {
-//             "type": "radio",
-//             "question": "What is the colour of the laser cutter?",
-//             "id":"laserColor",
-//             "image":"https://wiki.gctechspace.org/public/lasercutter.jpg",
-//             "options": [
-//               "red",
-//               "blue",
-//               "orange",
-//               "purple"
-//             ],
-//             "answer": "red"
-//           },
-//           {
-//             "type": "select",
-//             "question": "where is the fire extinguisher?",
-//             "id":"fireextinguisher",
-//             "options": [
-//             "cupboard",
-//             "top shelf",
-//             "draw"
-//             ],
-//             "answer": "draw"
-//           },
-//           {
-//             "type": "truefalse",
-//             "question": "Can the laser cutter cut metal?",
-//             "id":"cutMetal",
-//             "answer": "false"
-//           }
-//           ]}
+
+// {
+// "data":[
+//   {
+//     "type": "radio",
+//     "question": "What is the colour of the laser cutter?",
+//     "id":"laserColor",
+//     "image":"https://wiki.gctechspace.org/public/lasercutter.jpg",
+//     "options": [
+//       "red",
+//       "blue",
+//       "orange",
+//       "purple"
+//     ],
+//     "answer": "red"
+//   },
+//   {
+//     "type": "select",
+//     "question": "where is the fire extinguisher?",
+//     "id":"fireextinguisher",
+//     "options": [
+//     "cupboard",
+//     "top shelf",
+//     "draw"
+//     ],
+//     "answer": "draw"
+//   },
+//   {
+//     "type": "truefalse",
+//     "question": "Can the laser cutter cut metal?",
+//     "id":"cutMetal",
+//     "answer": "false"
+//   },
+//   {
+//     "type":"text",
+//     "text":"# test markdown `ff`"
+//   }
+//   ]}
