@@ -4,4 +4,4 @@ from django.db import models
 class InductionQuizzes(models.Model):
     name        = models.CharField("Name", max_length=30, unique=True)
     publish     = models.BooleanField(null=True)
-    questions   = models.JSONField()
+    data        = models.JSONField()

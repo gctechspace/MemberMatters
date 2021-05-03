@@ -28,6 +28,7 @@ class Inductionquiz(APIView):
     def get(self, request):
 
         objectQuerySet = InductionQuizzes.objects.all()
-        data = serializers.serialize('json', list(objectQuerySet), fields=('id', 'name', 'publish', 'questions'))        
+        data = serializers.serialize('json', list(objectQuerySet), fields=('id', 'name', 'publish', 'data'))        
+        print(json.loads(data))
         return Response(json.loads(data))
     
