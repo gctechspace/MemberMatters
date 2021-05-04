@@ -74,9 +74,9 @@ export default {
   props: {
     id:Number,
     name:String,
-    components:{QMarkdown},
     questions:Array
   },
+    components:{QMarkdown},
   data() {
     return {
       interval: 0,
