@@ -1,51 +1,52 @@
 <template>
   <div class="training-form">
-    <q-form v-bind:id="id" v-bind:name="name" v-bind="questions" v-bind:key="id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+    <q-form v-bind:id="id" v-bind:name="name" v-bind="formItems" v-bind:key="id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
       <div>
-        <div v-for="question in questions"  v-bind:key="question.id">
+        <div v-for="formItem in formItems"  v-bind:key="formItem.id">
           
-          <div v-if="question.type == 'radio'" class="q-pa-md">
+          <div v-if="formItem.type == 'radio'" class="q-pa-md">
             <q-img
-            v-if="question.image"
-            :src="question.image"
+            v-if="formItem.image"
+            :src="formItem.image"
             spinner-color="primary"
             spinner-size="82px"
             style="height: 140px; max-width: 150px; marginBottom:10px"
             />
-            <div class="text" style="marginBottom: 16px">{{question.question}}</div>
+            <q-markdown style="marginBottom: 16px" :src="`${formItem.question}`"></q-markdown>
             <div class="q-gutter-sm">
-              <div  v-for="option in question.options" v-bind:key="option.id">
-                <q-radio lazy-rules="ondemand" dense v-model="form[question.id]" :val="option" :label="option"></q-radio>
+              <div  v-for="option in formItem.options" v-bind:key="option.id">
+                <q-radio lazy-rules="ondemand" dense v-model="form[formItem.id]" :val="option" :label="option"></q-radio>
               </div>      
             </div>
           </div>
 
-          <div v-if="question.type == 'select'" class="q-px-sm q-pt-sm">
+          <div v-if="formItem.type == 'select'" class="q-px-sm q-pt-sm">
             <div class="q-gutter-sm">
             <q-img
-            v-if="question.image"
-            :src="question.image"
+            v-if="formItem.image"
+            :src="formItem.image"
             spinner-color="primary"
             spinner-size="82px"
             style="height: 140px; max-width: 150px; marginBottom:10px"
             />
-              <q-select filled v-model="form[question.id]" :options="question.options" :label="question.question"></q-select>
+              
+              <q-select filled v-model="form[formItem.id]" :options="formItem.options" :label="formItem.question"></q-select>
             </div>
           </div>
 
-          <div v-if="question.type == 'truefalse'" class="q-px-sm q-pt-sm">
+          <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm">
             <q-img
-            v-if="question.image"
-            :src="question.image"
+            v-if="formItem.image"
+            :src="formItem.image"
             spinner-color="primary"
             spinner-size="82px"
             style="height: 140px; max-width: 150px; marginBottom:10px"
             />
-            <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[question.id]" right-label :label="`${question.question}`" color="primary"/>
+            <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[formItem.id]" right-label :label="`${formItem.question}`" color="primary"/>
           </div>
 
-          <div v-if="question.type == 'text'" class="q-px-sm q-pt-sm">
-            <q-markdown :src="question.text">{{question.text}}</q-markdown>
+          <div v-if="formItem.type == 'text'" class="q-px-sm q-pt-sm">
+            <q-markdown :src="formItem.text"></q-markdown>
           </div>
         </div>
       </div>
@@ -74,7 +75,7 @@ export default {
   props: {
     id:Number,
     name:String,
-    questions:Array
+    formItems:Array
   },
     components:{QMarkdown},
   data() {
@@ -108,7 +109,7 @@ export default {
     },
     formFunction: function () {
       var obj = {}
-      this.questions.map(function(q) {
+      this.formItems.map(function(q) {
         obj[q.id] = null
       });
       this.form = {...this.form, ...obj}
@@ -129,13 +130,13 @@ export default {
 }
 </style>
 
-// Questions example
+// formItems example
 
 // {
 // "data":[
 //   {
 //     "type": "radio",
-//     "question": "What is the colour of the laser cutter?",
+//     "formItem": "What is the colour of the laser cutter?",
 //     "id":"laserColor",
 //     "image":"https://wiki.gctechspace.org/public/lasercutter.jpg",
 //     "options": [
@@ -148,7 +149,7 @@ export default {
 //   },
 //   {
 //     "type": "select",
-//     "question": "where is the fire extinguisher?",
+//     "formItem": "where is the fire extinguisher?",
 //     "id":"fireextinguisher",
 //     "options": [
 //     "cupboard",
@@ -159,7 +160,7 @@ export default {
 //   },
 //   {
 //     "type": "truefalse",
-//     "question": "Can the laser cutter cut metal?",
+//     "formItem": "Can the laser cutter cut metal?",
 //     "id":"cutMetal",
 //     "answer": "false"
 //   },

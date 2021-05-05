@@ -13,7 +13,7 @@
       
       <q-tab-panel v-for="device in devices" v-bind:key="`${device.pk}-tab`" :name="device.pk">
       <div class="text-h6">{{device.fields.name}}</div>
-      <training-form :questions="device.fields.data.data" :name="device.fields.name" :id="device.pk" />
+      <training-form :formItems="device.fields.data.data" :name="device.fields.name" :id="device.pk" />
       </q-tab-panel>
     </q-tab-panels>
 
