@@ -12,10 +12,10 @@
         <q-step
           :name="i+1"
           :title="formStep.stepName"
-          icon="assignment"
+          :icon="formStep.icon"
           :done="step > i+1">
           <div>
-            <div v-for="(formItem, index) in formStep.data"  v-bind:key="formItem.id+index">
+            <div v-for="(formItem, index) in formStep.data"  v-bind:key="formItem.id">
               
               <div v-if="formItem.type == 'radio'" class="q-pa-md">
                 <q-img
@@ -130,6 +130,7 @@ export default {
     formFunction: function () {
       var obj = {}
       this.formItems.map(function(q) {
+        
         q.map(()=>{
           obj[q.data.id] = null
         })
@@ -156,7 +157,7 @@ export default {
 // {
 // "data":[
 // {"stepName":"My first step",
-// "icon":"settings",
+// "icon":"tools",
 // "data":[  {
 //     "type": "radio",
 //     "question": "What is the colour of the laser cutter?",
@@ -192,7 +193,7 @@ export default {
 //     "text":"# test markdown `ff`"
 //   }]},
 //   {"stepName":"My second step",
-// "icon":"assignment",
+// "icon":"tools",
 // "data":[  {
 //     "type": "radio",
 //     "question": "What is the colour of the laser cutter?",
@@ -227,4 +228,5 @@ export default {
 //     "type":"text",
 //     "text":"# test markdown `ff`"
 //   }]}
+  
 //   ]}
