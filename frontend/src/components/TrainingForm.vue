@@ -9,6 +9,7 @@
         vertical
         color="primary"
         animated>
+         <!-- TODO add dynamic icons -->
         <q-step
           :name="i+1"
           :title="formStep.stepName"
@@ -16,7 +17,7 @@
           :done="step > i+1">
           <div>
             <div v-for="(formItem, index) in formStep.data"  v-bind:key="formItem.id">
-              
+              <!-- TODO add youtube youtube video embed -->
               <div v-if="formItem.type == 'radio'" class="q-pa-md">
                 <q-img
                 v-if="formItem.image"
@@ -122,6 +123,7 @@ export default {
   },
   methods:{
     onSubmit() {
+      //TODO add submission function
       console.log(this.form)
     },
     onReset() {

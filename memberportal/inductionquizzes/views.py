@@ -30,5 +30,6 @@ class Inductionquiz(APIView):
         objectQuerySet = InductionQuizzes.objects.all()
         data = serializers.serialize('json', list(objectQuerySet), fields=('id', 'name', 'publish', 'data'))        
         print(json.loads(data))
+        # TODO remove answers from json before return
         return Response(json.loads(data))
-    
+# TODO create submission function and route
