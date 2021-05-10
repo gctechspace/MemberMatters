@@ -1,9 +1,7 @@
 <template>
   <q-page class="column flex justify-start items-center">
     <div>
-      <h3 class="q-mt-none q-mb-md">
-        {{ device.name }} {{ deviceType }}
-      </h3>
+      <h3 class="q-mt-none q-mb-md">{{ device.name }} {{ deviceType }}</h3>
       <q-card
         class="q-mb-none"
         style="background-color: transparent"
@@ -22,7 +20,7 @@
                   <q-input
                     v-model="device.name"
                     outlined
-                    :label="$t('form.name')"
+                    :label="$t(`${deviceType}.name`)"
                     :debounce="debounceLength"
                     @input="saveChange('name')"
                   >
@@ -38,7 +36,7 @@
                   <q-input
                     v-model="device.description"
                     outlined
-                    :label="$t('form.description')"
+                    :label="$t(`${deviceType}.description`)"
                     :debounce="debounceLength"
                     @input="saveChange('description')"
                   >
@@ -144,7 +142,7 @@
                   <div class="row">
                     <q-space />
                     <q-btn
-                      :label="$t('doors.remove')"
+                      :label="$t(`${deviceType}.remove`)"
                       type="reset"
                       color="primary"
                       flat
@@ -158,17 +156,36 @@
               </q-form>
             </q-card-section>
           </q-tab-panel>
+
           <q-tab-panel name="stats">
-            <template v-if="deviceType === 'doors'">
-              <li v-for="(stat, index) in device.stats" :key="index">
-                {{ stat[2] }} - {{ stat[3] }} Swipes - {{ stat[4] }} Last Swipe
-              </li>
-            </template>
-            <template v-else>
-              <li v-for="(stat, index) in device.stats" :key="index">
-                {{ stat[2] }} - {{ stat[3] }} Records - {{ stat[4] }} Minutes Logged
-              </li>
-            </template>
+            <div class="row flex content-start justify-center">
+              <q-table
+                :data="device.stats"
+                :columns="columnI18n"
+                row-key="key"
+                :filter="filter"
+                :pagination.sync="devicePagination"
+                :dense="$q.screen.lt.md"
+                :grid="$q.screen.xs"
+                class="table"
+                :loading="loading"
+                :no-data-label="$t(`${deviceType}.nodata`)"
+              >
+                <template v-slot:top-right>
+                  <q-input
+                    v-model="filter"
+                    outlined
+                    dense
+                    debounce="300"
+                    placeholder="Search"
+                  >
+                    <template v-slot:append>
+                      <q-icon :name="icons.search" />
+                    </template>
+                  </q-input>
+                </template>
+              </q-table>
+            </div>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -202,6 +219,15 @@ export default {
     return {
       tab: "profile",
       removeLoading: false,
+      loading: false,
+      errorLoading: false,
+      updateInterval: null,
+      filter: "",
+      devicePagination: {
+        sortBy: "desc",
+        descending: false,
+        rowsPerPage: this.$q.screen.xs ? 3 : 8,
+      },
       saved: {
         // if there was an error saving the form
         error: false,
@@ -305,6 +331,53 @@ export default {
   },
   computed: {
     ...mapGetters("adminTools", ["doors", "interlocks"]),
+    columnI18n() {
+      let columns = [];
+      if (this.deviceType === "doors") {
+        columns = [
+          {
+            name: "user",
+            label: "User",
+            field: "screen_name",
+            sortable: true,
+          },
+          {
+            name: "record",
+            label: "Swipes",
+            field: "records",
+            sortable: true,
+          },
+          {
+            name: "lastSeen",
+            label: "Last Swipe",
+            field: "lastSeen",
+            sortable: true,
+          },
+        ];
+      } else {
+        columns = [
+          {
+            name: "user",
+            label: "User",
+            field: "screen_name",
+            sortable: true,
+          },
+          {
+            name: "record",
+            label: "Records",
+            field: "records",
+            sortable: true,
+          },
+          {
+            name: "onTime",
+            label: "Minutes Logged",
+            field: "onTime",
+            sortable: true,
+          },
+        ];
+      }
+      return columns;
+    },
     icons() {
       return icons;
     },
@@ -318,7 +391,6 @@ export default {
           (item) => String(item.id) === this.deviceId
         );
       }
-      console.log(device);
       return device || false;
     },
   },

@@ -239,15 +239,7 @@ export default {
     };
   },
   computed: {
-    // manageLabel() {
-    //   let label = "";
-    //   if (this.deviceChoice === "doors") {
-    //     label = "manageDoor";
-    //   } else {
-    //     label = "manageInterlock";
-    //   }
-    //   return label;
-    // },
+        // TODO: Add table labels here for I18n translation and door/interlock differences
     columnI18n() {
       let columns = [];
       if (this.deviceChoice === "doors") {
@@ -301,14 +293,12 @@ export default {
       }
       return columns;
     },
-    // TODO: Add table labels here for I18n translation and door/interlock differences
     icons() {
       return icons;
     },
   },
   methods: {
     rebootDevice(deviceId) {
-      console.log(`/api/access/${this.deviceChoice}/${deviceId}/reboot/`),
       this.$refs[`${deviceId}-reboot`].loading = true;
       this.$axios
         .post(`/api/access/${this.deviceChoice}/${deviceId}/reboot/`)
@@ -322,34 +312,6 @@ export default {
           this.$refs[`${deviceId}-reboot`].loading = false;
         });
     },
-    // rebootInterlock(interlockId) {
-    //   this.$refs[`${interlockId}-reboot`].loading = true;
-    //   this.$axios
-    //     .post(`/api/access/interlocks/${interlockId}/reboot/`)
-    //     .catch(() => {
-    //       this.$q.dialog({
-    //         title: this.$t("error.error"),
-    //         message: this.$t("error.requestFailed"),
-    //       });
-    //     })
-    //     .finally(() => {
-    //       this.$refs[`${interlockId}-reboot`].loading = false;
-    //     });
-    // },
-    // rebootDoor(doorId) {
-    //   this.$refs[`${doorId}-reboot`].loading = true;
-    //   this.$axios
-    //     .post(`/api/access/doors/${doorId}/reboot/`)
-    //     .catch(() => {
-    //       this.$q.dialog({
-    //         title: this.$t("error.error"),
-    //         message: this.$t("error.requestFailed"),
-    //       });
-    //     })
-    //     .finally(() => {
-    //       this.$refs[`${doorId}-reboot`].loading = false;
-    //     });
-    // },
     unlockDoor(doorId) {
       this.$refs[`${doorId}-unlock`].loading = true;
       this.$axios
