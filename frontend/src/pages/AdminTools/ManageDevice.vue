@@ -22,7 +22,7 @@
                   <q-input
                     v-model="device.name"
                     outlined
-                    :label="$t('doors.name')"
+                    :label="$t('form.name')"
                     :debounce="debounceLength"
                     @input="saveChange('name')"
                   >
@@ -38,7 +38,7 @@
                   <q-input
                     v-model="device.description"
                     outlined
-                    :label="$t('doors.description')"
+                    :label="$t('form.description')"
                     :debounce="debounceLength"
                     @input="saveChange('description')"
                   >
@@ -159,7 +159,16 @@
             </q-card-section>
           </q-tab-panel>
           <q-tab-panel name="stats">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <template v-if="deviceType === 'doors'">
+              <li v-for="(stat, index) in device.stats" :key="index">
+                {{ stat[2] }} - {{ stat[3] }} Swipes - {{ stat[4] }} Last Swipe
+              </li>
+            </template>
+            <template v-else>
+              <li v-for="(stat, index) in device.stats" :key="index">
+                {{ stat[2] }} - {{ stat[3] }} Records - {{ stat[4] }} Minutes Logged
+              </li>
+            </template>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -215,6 +224,8 @@ export default {
         playThemeOnSwipe: null,
         exemptFromSignin: null,
         hiddenToMembers: null,
+        usage: null,
+        stats: [],
       },
     };
   },
@@ -239,6 +250,8 @@ export default {
       this.device.playThemeOnSwipe = this.currentDevice.playThemeOnSwipe;
       this.device.exemptFromSignin = this.currentDevice.exemptFromSignin;
       this.device.hiddenToMembers = this.currentDevice.hiddenToMembers;
+      this.device.usage = this.currentDevice.usage;
+      this.device.stats = this.currentDevice.stats;
     },
     removeDevice() {
       this.$q
@@ -305,6 +318,7 @@ export default {
           (item) => String(item.id) === this.deviceId
         );
       }
+      console.log(device);
       return device || false;
     },
   },

@@ -137,6 +137,11 @@ class Doors(APIView):
         doors = models.Doors.objects.all()
 
         def get_door(door):
+
+            cursor = connection.cursor()
+            cursor.execute('SELECT access_doorlog.door_id, access_doorlog.user_id, pp.screen_name, COUNT(access_doorlog.user_id) as records, MAX(access_doorlog.date) as lastSeen FROM access_doorlog INNER JOIN profile_profile pp on access_doorlog.user_id = pp.user_id GROUP BY access_doorlog.door_id, access_doorlog.user_id HAVING access_doorlog.door_id = %s ORDER BY records DESC', [door.id])
+            result = cursor.fetchall()
+
             return {
                 "id": door.id,
                 "name": door.name,
@@ -149,6 +154,7 @@ class Doors(APIView):
                 "exemptFromSignin": door.exempt_signin,
                 "hiddenToMembers": door.hidden,
                 "usage": models.DoorLog.objects.filter(door_id=door.id).count(),
+                "stats": result,
             }
 
         return Response(map(get_door, doors))
@@ -200,7 +206,17 @@ class Interlocks(APIView):
             if result[0] is not None:
                 onTime = humanize.precisedelta(round(result[0]), suppress=['months', 'days', 'seconds', 'milliseconds', 'microseconds'])
 
-            print(onTime)
+            cursor = connection.cursor()
+            cursor.execute('SELECT access_interlocklog.interlock_id, access_interlocklog.user_id, pp.screen_name, COUNT(access_interlocklog.first_heartbeat) as records, round(SUM(julianday(access_interlocklog.last_heartbeat)-julianday(access_interlocklog.first_heartbeat))*1440) AS onTime FROM access_interlocklog INNER JOIN profile_profile pp on access_interlocklog.user_id = pp.user_id GROUP BY access_interlocklog.interlock_id, access_interlocklog.user_id HAVING access_interlocklog.interlock_id = %s ORDER BY onTime DESC', [interlock.id])
+            result = cursor.fetchall()
+
+            #  This next part is to grab any interlocks with an uncompleted session
+            # try:
+            #     session = models.InterlockLog.objects.get(session_complete=0, interlock_id=interlock.id)
+            # except models.InterlockLog.DoesNotExist:
+            #     session = None
+            # print(session)
+
             return {
                 "id": interlock.id,
                 "name": interlock.name,
@@ -213,6 +229,8 @@ class Interlocks(APIView):
                 "exemptFromSignin": interlock.exempt_signin,
                 "hiddenToMembers": interlock.hidden,
                 "usage": onTime,
+                "stats": result,
+                # "session": models.InterlockLog.objects.get(session_complete=0).values(),
             }
 
         return Response(map(get_interlock, interlocks))

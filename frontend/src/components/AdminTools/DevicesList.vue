@@ -74,7 +74,7 @@
                   class="q-mr-sm"
                   size="sm"
                   color="accent"
-                  @click="rebootDoor(props.row.id)"
+                  @click="rebootDevice(props.row.id)"
                 >
                   <q-icon :name="icons.reboot" />
                   <q-tooltip>
@@ -104,7 +104,7 @@
                   class="q-mr-sm"
                   size="sm"
                   color="accent"
-                  @click="rebootInterlock(props.row.id)"
+                  @click="rebootDevice(props.row.id)"
                 >
                   <q-icon :name="icons.reboot" />
                   <q-tooltip>
@@ -184,7 +184,7 @@
               class="q-mr-sm"
               size="sm"
               color="accent"
-              @click="rebootDoor(props.row.id)"
+              @click="rebootDevice(props.row.id)"
             >
               <q-icon :name="icons.reboot" />
               <q-tooltip>
@@ -198,7 +198,7 @@
               class="q-mr-sm"
               size="sm"
               color="accent"
-              @click="rebootInterlock(props.row.id)"
+              @click="rebootDevice(props.row.id)"
             >
               <q-icon :name="icons.reboot" />
               <q-tooltip>
@@ -307,11 +307,11 @@ export default {
     },
   },
   methods: {
-    // TODO: Remove dup of reboot and manage
-    rebootInterlock(interlockId) {
-      this.$refs[`${interlockId}-reboot`].loading = true;
+    rebootDevice(deviceId) {
+      console.log(`/api/access/${this.deviceChoice}/${deviceId}/reboot/`),
+      this.$refs[`${deviceId}-reboot`].loading = true;
       this.$axios
-        .post(`/api/access/interlocks/${interlockId}/reboot/`)
+        .post(`/api/access/${this.deviceChoice}/${deviceId}/reboot/`)
         .catch(() => {
           this.$q.dialog({
             title: this.$t("error.error"),
@@ -319,23 +319,37 @@ export default {
           });
         })
         .finally(() => {
-          this.$refs[`${interlockId}-reboot`].loading = false;
+          this.$refs[`${deviceId}-reboot`].loading = false;
         });
     },
-    rebootDoor(doorId) {
-      this.$refs[`${doorId}-reboot`].loading = true;
-      this.$axios
-        .post(`/api/access/doors/${doorId}/reboot/`)
-        .catch(() => {
-          this.$q.dialog({
-            title: this.$t("error.error"),
-            message: this.$t("error.requestFailed"),
-          });
-        })
-        .finally(() => {
-          this.$refs[`${doorId}-reboot`].loading = false;
-        });
-    },
+    // rebootInterlock(interlockId) {
+    //   this.$refs[`${interlockId}-reboot`].loading = true;
+    //   this.$axios
+    //     .post(`/api/access/interlocks/${interlockId}/reboot/`)
+    //     .catch(() => {
+    //       this.$q.dialog({
+    //         title: this.$t("error.error"),
+    //         message: this.$t("error.requestFailed"),
+    //       });
+    //     })
+    //     .finally(() => {
+    //       this.$refs[`${interlockId}-reboot`].loading = false;
+    //     });
+    // },
+    // rebootDoor(doorId) {
+    //   this.$refs[`${doorId}-reboot`].loading = true;
+    //   this.$axios
+    //     .post(`/api/access/doors/${doorId}/reboot/`)
+    //     .catch(() => {
+    //       this.$q.dialog({
+    //         title: this.$t("error.error"),
+    //         message: this.$t("error.requestFailed"),
+    //       });
+    //     })
+    //     .finally(() => {
+    //       this.$refs[`${doorId}-reboot`].loading = false;
+    //     });
+    // },
     unlockDoor(doorId) {
       this.$refs[`${doorId}-unlock`].loading = true;
       this.$axios
