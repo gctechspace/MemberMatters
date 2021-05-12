@@ -6,7 +6,7 @@
     :filter="filter"
     :pagination.sync="pagination"
     :grid="$q.screen.xs"
-    :no-data-label="$t('interlocks.nodata')"
+    :no-data-label="$t(`${deviceChoice}.nodata`)"
   >
     <template v-slot:top-right>
       <q-input

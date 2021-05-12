@@ -24,8 +24,8 @@ export default {
     manageDoor: "Manage Door",
     manageInterlock: "Manage Interlock",
     manageDevice: "Manage Device",
-    interlocks: "Interlocks",
     devices: "Devices",
+    interlocks: "Interlocks",
     kiosks: "Kiosks",
 
     memberTools: "Member Tools",
