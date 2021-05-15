@@ -16,7 +16,7 @@
           :icon="icons[formStep.icon]"
           :done="step > i+1">
           <div>
-            <div v-for="(formItem, index) in formStep.data"  v-bind:key="formItem.id">
+            <div v-for="(formItem) in formStep.data"  v-bind:key="formItem.id">
               <!-- TODO add youtube youtube video embed -->
               <div v-if="formItem.type == 'radio'" class="q-pa-md">
                 <q-img
@@ -88,7 +88,6 @@
 
 <script>
 import icons from "../icons"
-import Lodash from "lodash"
 import { QMarkdown } from '@quasar/quasar-ui-qmarkdown'
 export default {
   name: "TrainingForm",
