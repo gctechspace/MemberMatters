@@ -37,6 +37,14 @@ const PageAndRouteConfig = [
     component: () => import("pages/Webcams"),
   },
   {
+    icon: icons.training,
+    to: "/training",
+    name: "training",
+    loggedIn: true,
+    kiosk: true,
+    component: () => import("pages/Training"),
+  },
+  {
     icon: icons.admintools,
     name: "adminTools",
     loggedIn: true,
@@ -246,7 +254,8 @@ const PageAndRouteConfig = [
         to: "/account/membership-tier",
         name: "membershipTier",
         loggedIn: true,
-        hiddenMenu: !store?.getters["config/features"]?.stripe?.enableMembershipPayments,
+        hiddenMenu: !store?.getters["config/features"]?.stripe
+          ?.enableMembershipPayments,
         component: () => import("pages/MembershipTier"),
       },
     ],

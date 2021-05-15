@@ -10,7 +10,8 @@ export default {
   // all of these are for pages
   dashboard: "mdi-view-column-outline",
   webcams: "mdi-webcam",
-
+  training:"mdi-developer-board",
+  
   menu: "mdi-menu",
   backButton: "mdi-keyboard-backspace",
   settings: "mdi-cog",

@@ -6,6 +6,7 @@ export default {
     rootIndex: "Dashboard",
     dashboard: "Dashboard",
     webcams: "Webcams",
+    training: "Training",
     login: "Login",
     resetPassword: "Reset Password",
     logout: "Logout",
@@ -77,6 +78,9 @@ export default {
   },
   webcams: {
     pageDescription: "This page shows our public webcams, updated every minute for your convenience.",
+  },
+   training: {
+    pageDescription: "This page about training",
   },
   about: {
     title: "About MemberMatters",
