@@ -18,7 +18,7 @@
           <div>
             <div v-for="(formItem) in formStep.data"  v-bind:key="formItem.id">
               <!-- TODO add youtube youtube video embed -->
-              <div v-if="formItem.type == 'radio'" class="q-pa-md">
+              <div v-if="formItem.type == 'radio'" class="q-pa-md" :style="{borderStyle: 'solid', borderColor: `${form[formItem.id] ? 'transparent' : 'red'}`, borderWidth:'1px', borderRadius:'16px'}">
                 <q-img
                 v-if="formItem.image"
                 :src="formItem.image"
@@ -26,11 +26,12 @@
                 spinner-size="82px"
                 style="height: 140px; max-width: 150px; marginBottom:10px"
                 />
-                <q-markdown style="marginBottom: 16px" :src="`${formItem.question}`"></q-markdown>
+                <q-markdown :style="{marginBottom: '16px'}" :src="`${formItem.question}`"></q-markdown>
                 <div class="q-gutter-sm">
                   <div  v-for="option in formItem.options" v-bind:key="option.id">
-                    <q-radio lazy-rules="ondemand" dense v-model="form[formItem.id]" :val="option" :label="option"></q-radio>
+                    <q-radio dense v-model="form[formItem.id]" :val="option" :label="option"></q-radio>
                   </div>      
+                    <q-markdown :style="{marginBottom: '16px', color:'red'}" src="Please complete the question"></q-markdown>
                 </div>
               </div>
 
@@ -44,7 +45,9 @@
                 style="height: 140px; max-width: 150px; marginBottom:10px"
                 />
                   
-                  <q-select filled v-model="form[formItem.id]" :options="formItem.options" :label="formItem.question"></q-select>
+                  <q-select filled v-model="form[formItem.id]" :options="formItem.options" :label="formItem.question"
+                  lazy-rules :rules="[ val => val && val.length > 0 || 'Please complete the question']"
+                  ></q-select>
                 </div>
               </div>
 
@@ -65,19 +68,18 @@
             </div>
           </div>
 
-          <q-toggle v-model="form.accept" label="I accept the license and terms" />
-          <div>
-              <q-btn
-              :label="$t('button.submit')"
-              type="submit"
-              color="primary-btn"
-              :loading="buttonLoading"
-              :disable="buttonLoading"
-              />
-            <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-          </div>
+            <!-- <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" /> -->
+          <q-btn label="YES" @click="boop" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
+          <q-btn v-if="step < formItems.length" @click="step++" type="submit" color="primary" label="Continue"></q-btn>
+
+            <div v-if="step == stepTotal">
+                <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form.accept" right-label label="I accept the license and terms" color="primary"/>
+            </div>
         <q-stepper-navigation>
-          <q-btn v-if="step < formItems.length" @click="step++" color="primary" label="Continue"></q-btn>
+          <q-btn v-if="step == stepTotal" :label="$t('button.submit')" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
+
+          <q-btn v-if="step < formItems.length" @click="step++" type="submit" color="primary-btn" label="Continue" :loading="buttonLoading" :disable="buttonLoading"></q-btn>
+          
           <q-btn v-if="step > 1" flat @click="step--" color="primary" label="Back" class="q-ml-sm"></q-btn>
         </q-stepper-navigation>
       </q-step>
@@ -109,7 +111,8 @@ export default {
       form: {
         accept:null,
       },
-      step: 1
+      step: 1,
+      stepTotal:0
     };
   },
   mounted() {
@@ -123,17 +126,29 @@ export default {
   methods:{
     onSubmit() {
       //TODO add submission function
+      if(!this.form.accept){
+        console.log("Can not continue if you do not accept terms and conditions")
+      }
+      this.form.map((question) =>{
+        console.log(question)
+      })
       console.log(this.form)
     },
     onReset() {
       console.log(this.form)
     },
+    boop(){
+      console.log("booop")
+    },
     formFunction: function () {
       var obj = {}
+      var objSelect = {}
       this.formItems.map((step) => {
+        this.stepTotal++
         step.data.map((question)=>{
           if(!(question.type === "text")){
            obj[question.id] = null
+           objSelect[question.id] = null
           }
         })
       });
@@ -176,7 +191,7 @@ export default {
 //   {
 //     "type": "select",
 //     "question": "where is the fire extinguisher?",
-//     "id":"fireextinguisher",
+//     "id":"fireExtinguisher",
 //     "options": [
 //     "cupboard",
 //     "top shelf",
@@ -198,37 +213,67 @@ export default {
 // "icon":"tools",
 // "data":[  {
 //     "type": "radio",
-//     "question": "What is the colour of the laser cutter?",
-//     "id":"laserColor",
-//     "image":"https://wiki.gctechspace.org/public/lasercutter.jpg",
+//     "question": "What Wattage is our laser cutter",
+//     "id":"wattage",
 //     "options": [
-//       "red",
-//       "blue",
-//       "orange",
-//       "purple"
+//       "50W",
+//       "100W",
+//       "60W",
+//       "120W"
 //     ],
-//     "answer": "red"
+//     "answer": "100W"
 //   },
 //   {
 //     "type": "select",
-//     "question": "where is the fire extinguisher?",
-//     "id":"fireextinguisher",
+//     "question": "What material can't you laser cut?",
+//     "id":"badmaterial",
 //     "options": [
-//     "cupboard",
-//     "top shelf",
-//     "draw"
+//     "acrylic plastic",
+//     "pla plastic",
+//     "pvc plastic"
 //     ],
-//     "answer": "draw"
+//     "answer": "pvc plastic"
 //   },
 //   {
 //     "type": "truefalse",
-//     "quesion": "Can the laser cutter cut metal?",
-//     "id":"cutMetal",
-//     "answer": "false"
+//     "question": "Is the laser cutter water cooled?",
+//     "id":"watercooled",
+//     "answer": "true"
 //   },
 //   {
 //     "type":"text",
-//     "text":"# test markdown `ff`"
+//     "text":"# some awesome text here `oh yeah!`"
+//   }]},
+//   {"stepName":"My second step",
+// "icon":"tools",
+// "data":[  {
+//     "type": "radio",
+//     "question": "What type of glasses should you use when using the laser cutter?",
+//     "id":"glasses",
+//     "options": [
+//       "sun glasses",
+//       "clear glasses",
+//       "sunnies",
+//       "certified laser glasses"
+//     ],
+//     "answer": "certified laser glasses"
+//   },
+//   {
+//     "type": "select",
+//     "question": "What do you do if the laser cutter gets stuck",
+//     "id":"emergency",
+//     "options": [
+//     "call for help",
+//     "emergency stop",
+//     "kick it until it stops"
+//     ],
+//     "answer": "emergency stop"
+//   },
+//   {
+//     "type": "truefalse",
+//     "question": "Can the laser cutter be left unattended?",
+//     "id":"unattended",
+//     "answer": "false"
 //   }]}
   
 //   ]}
