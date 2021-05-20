@@ -130,10 +130,11 @@ export default {
     },
     formFunction: function () {
       var obj = {}
-      this.formItems.map(function(q) {
-        
-        q.map(()=>{
-          obj[q.data.id] = null
+      this.formItems.map((step) => {
+        step.data.map((question)=>{
+          if(!(question.type === "text")){
+           obj[question.id] = null
+          }
         })
       });
       this.form = {...this.form, ...obj}
