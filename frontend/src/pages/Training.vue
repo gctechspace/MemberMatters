@@ -16,14 +16,6 @@
       <training-form :formItems="device.fields.data.data" :name="device.fields.name" :id="device.pk" />
       </q-tab-panel>
     </q-tab-panels>
-
-    <q-markdown :src="this.input"></q-markdown>
-
-    <div id="editor">
-      <textarea :value="input" @input="update"></textarea>
-
-    </div>
-
   </q-page>
 </template>
 
@@ -78,9 +70,6 @@ export default {
         console.log(e);
       });
     },
-    update: _.debounce(function(e) {
-      this.input = e.target.value;
-      }, 300)
   },
   computed: {  
     icons() {
