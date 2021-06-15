@@ -126,9 +126,22 @@ export default {
   methods:{
     onSubmit() {
       //TODO add submission function
-      if(!this.form.accept){
+      if(this.form.accept){
+      
+      this.loading = true;
+
+      this.$axios.post("/api/quiz/submission/", this.form)
+        .then(() => {
+          this.form.error = false;
+          this.form.success = true;
+          this.getMeetings();
+        })
+        .catch(() => {
+          this.form.error = true;
+        })
+        .finally(() => { this.loading = false; });
+        }
         console.log("Can not continue if you do not accept terms and conditions")
-      }
 
       console.log(this.form)
     },
