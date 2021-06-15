@@ -11,14 +11,14 @@
         animated>
          <!-- TODO add dynamic icons -->
         <q-step
-          :name="i+1"
+          :name="i"
           :title="formStep.stepName"
           :icon="icons[formStep.icon]"
           :done="step > i+1">
           <div>
             <div v-for="(formItem) in formStep.data"  v-bind:key="formItem.id">
               <!-- TODO add youtube youtube video embed -->
-              <div v-if="formItem.type == 'radio'" class="q-pa-md" :style="{borderStyle: 'solid', borderColor: `${form[formItem.id] ? 'transparent' : 'red'}`, borderWidth:'1px', borderRadius:'16px'}">
+              <div v-if="formItem.type == 'radio'" class="q-pa-md" :style="{borderStyle: 'solid', borderColor: `${(touched && !form[formItem.id]) ? 'red' : 'transparent'}`, marginTop:'10px', borderWidth:'1px', borderRadius:'16px'}">
                 <q-img
                 v-if="formItem.image"
                 :src="formItem.image"
@@ -31,11 +31,11 @@
                   <div  v-for="option in formItem.options" v-bind:key="option.id">
                     <q-radio dense v-model="form[formItem.id]" :val="option" :label="option"></q-radio>
                   </div>      
-                    <q-markdown :style="{marginBottom: '16px', color:'red'}" src="Please complete the question"></q-markdown>
+                    <q-markdown v-if="(touched && !form[formItem.id])" :style="{marginBottom: '16px', color:'red'}" src="Please complete the question"></q-markdown>
                 </div>
               </div>
 
-              <div v-if="formItem.type == 'select'" class="q-px-sm q-pt-sm">
+              <div v-if="formItem.type == 'select'" :style="{borderStyle: 'solid', borderColor: `${(touched && !form[formItem.id]) ? 'red' : 'transparent'}`, marginTop:'10px', paddingBottom:'10px', borderWidth:'1px', borderRadius:'16px'}" class="q-px-sm q-pt-sm" >
                 <div class="q-gutter-sm">
                 <q-img
                 v-if="formItem.image"
@@ -51,7 +51,7 @@
                 </div>
               </div>
 
-              <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm">
+              <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm" :style="{borderStyle: 'solid', borderColor: `${(touched && !form[formItem.id]) ? 'red' : 'transparent'}`,  marginTop:'10px', borderWidth:'1px', borderRadius:'16px'}">
                 <q-img
                 v-if="formItem.image"
                 :src="formItem.image"
@@ -60,6 +60,7 @@
                 style="height: 140px; max-width: 150px; marginBottom:10px"
                 />
                 <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[formItem.id]" right-label :label="`${formItem.question}`" color="primary"/>
+                <q-markdown v-if="(touched && !form[formItem.id])" :style="{marginBottom: '16px', color:'red'}" src="Please complete the question"></q-markdown>
               </div>
 
               <div v-if="formItem.type == 'text'" class="q-px-sm q-pt-sm">
@@ -69,18 +70,15 @@
           </div>
 
             <!-- <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" /> -->
-          <q-btn label="YES" @click="boop" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
-          <q-btn v-if="step < formItems.length" @click="step++" type="submit" color="primary" label="Continue"></q-btn>
-
             <div v-if="step == stepTotal">
                 <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form.accept" right-label label="I accept the license and terms" color="primary"/>
             </div>
         <q-stepper-navigation>
           <q-btn v-if="step == stepTotal" :label="$t('button.submit')" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
 
-          <q-btn v-if="step < formItems.length" @click="step++" type="submit" color="primary-btn" label="Continue" :loading="buttonLoading" :disable="buttonLoading"></q-btn>
+          <q-btn v-if="step < formItems.length-1" @click="continueFunction" type="submit" color="primary-btn" label="Continue" :loading="buttonLoading" :disable="buttonLoading"></q-btn>
           
-          <q-btn v-if="step > 1" flat @click="step--" color="primary" label="Back" class="q-ml-sm"></q-btn>
+          <q-btn v-if="step > 0" flat @click="step--" color="primary" label="Back" class="q-ml-sm"></q-btn>
         </q-stepper-navigation>
       </q-step>
       </q-stepper>
@@ -111,8 +109,9 @@ export default {
       form: {
         accept:null,
       },
-      step: 1,
-      stepTotal:0
+      step: 0,
+      stepTotal:0,
+      touched:false
     };
   },
   mounted() {
@@ -129,16 +128,30 @@ export default {
       if(!this.form.accept){
         console.log("Can not continue if you do not accept terms and conditions")
       }
-      this.form.map((question) =>{
-        console.log(question)
-      })
+      // this.form.map((question) =>{
+      //   console.log(question)
+      // })
       console.log(this.form)
     },
     onReset() {
       console.log(this.form)
     },
-    boop(){
-      console.log("booop")
+    continueFunction: function(){
+      var nextPage = true
+      this.formItems[this.step].data.map((item) =>{
+        if(item.id){
+          var a = this.form[item.id]
+          if(a || a == false || a == 0){
+         }else {
+          nextPage = false
+          this.touched = true
+        }
+        }
+      })
+      if (nextPage){ 
+        this.step++
+        this.touched = false
+      }else console.log("please complete each question")
     },
     formFunction: function () {
       var obj = {}
