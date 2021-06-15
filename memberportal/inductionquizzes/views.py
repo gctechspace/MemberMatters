@@ -33,3 +33,17 @@ class Inductionquiz(APIView):
         # TODO remove answers from json before return
         return Response(json.loads(data))
 # TODO create submission function and route
+
+class QuizSubmission(APIView):
+    """
+    post: validates quiz submission
+    """
+    def get(self, request):
+        print(request)
+        return
+
+
+    def post(self, request):
+        print(request)
+        return
+    
