@@ -51,7 +51,7 @@
                 </div>
               </div>
 
-              <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm" :style="{borderStyle: 'solid', borderColor: `${(touched && !form[formItem.id]) ? 'red' : 'transparent'}`,  marginTop:'10px', borderWidth:'1px', borderRadius:'16px'}">
+              <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm" :style="{borderStyle: 'solid', borderColor: `${(touched && !form[formItem.id] == null) ? 'red' : 'transparent'}`,  marginTop:'10px', borderWidth:'1px', borderRadius:'16px'}">
                 <q-img
                 v-if="formItem.image"
                 :src="formItem.image"
@@ -60,7 +60,7 @@
                 style="height: 140px; max-width: 150px; marginBottom:10px"
                 />
                 <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form[formItem.id]" right-label :label="`${formItem.question}`" color="primary"/>
-                <q-markdown v-if="(touched && !form[formItem.id])" :style="{marginBottom: '16px', color:'red'}" src="Please complete the question"></q-markdown>
+                <q-markdown v-if="(touched && form[formItem.id]== null)" :style="{marginBottom: '16px', color:'red'}" src="Please complete the question"></q-markdown>
               </div>
 
               <div v-if="formItem.type == 'text'" class="q-px-sm q-pt-sm">
@@ -72,9 +72,10 @@
             <!-- <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" /> -->
             <div v-if="step == stepTotal">
                 <q-toggle :checked-icon="icons.success" :unchecked-icon="icons.close" v-model="form.accept" right-label label="I accept the license and terms" color="primary"/>
+                <q-markdown v-if="(touched && !form.accept)" :style="{marginBottom: '16px', color:'red'}" src="Submission can not be submitted without accepting terms and conditions"></q-markdown>
             </div>
         <q-stepper-navigation>
-          <q-btn v-if="step == stepTotal" :label="$t('button.submit')" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
+          <q-btn v-if="step == stepTotal" @click="continueFunction" label="submit" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
 
           <q-btn v-if="step < stepTotal" @click="continueFunction" type="submit" color="primary-btn" label="Continue" :loading="buttonLoading" :disable="buttonLoading"></q-btn>
           
@@ -128,9 +129,7 @@ export default {
       if(!this.form.accept){
         console.log("Can not continue if you do not accept terms and conditions")
       }
-      // this.form.map((question) =>{
-      //   console.log(question)
-      // })
+
       console.log(this.form)
     },
     onReset() {
@@ -149,8 +148,11 @@ export default {
         }
       })
       if (nextPage){ 
-        this.step++
         this.touched = false
+        if(this.step == this.stepTotal){
+          onSubmit()
+        }else this.step++
+        
       }else console.log("please complete each question")
     },
     formFunction: function () {
