@@ -76,7 +76,7 @@
         <q-stepper-navigation>
           <q-btn v-if="step == stepTotal" :label="$t('button.submit')" type="submit" color="primary-btn" :loading="buttonLoading" :disable="buttonLoading"/>
 
-          <q-btn v-if="step < formItems.length-1" @click="continueFunction" type="submit" color="primary-btn" label="Continue" :loading="buttonLoading" :disable="buttonLoading"></q-btn>
+          <q-btn v-if="step < stepTotal" @click="continueFunction" type="submit" color="primary-btn" label="Continue" :loading="buttonLoading" :disable="buttonLoading"></q-btn>
           
           <q-btn v-if="step > 0" flat @click="step--" color="primary" label="Back" class="q-ml-sm"></q-btn>
         </q-stepper-navigation>
@@ -166,6 +166,7 @@ export default {
         })
       });
       this.form = {...this.form, ...obj}
+      this.stepTotal--
     }
   },
   computed: {  
