@@ -1,7 +1,7 @@
 <template>
   <div class="training-form">
-    <q-form v-bind:id="id" v-bind:name="name" v-bind="formItems" v-bind:key="id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
 
+    <q-form v-bind:id="id" v-if="complete == null" v-bind:name="name" v-bind="formItems" v-bind:key="id" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
       <q-stepper
         v-for="(formStep, i) in formItems"
         v-bind:key="`formItem.stepName-${i}`"
@@ -84,6 +84,9 @@
       </q-step>
       </q-stepper>
     </q-form>
+    <div class="text-h2 text-center" v-if="complete"> Congratulations, you have completed the {{name}} training <q-avatar size="100px" class="q-xl-xl q-xl-sm" :icon="icons.smile" text-color="yellow"/> </div>
+    <div class="text-h3 text-center" v-if="complete == false"> Unfortunately, you misplaced a correct answer, please try again <q-avatar size="100px" class="q-xl-xl q-xl-sm" :icon="icons.smile" text-color="yellow"/> </div>
+    <q-btn v-if="complete == false" @click="onReset" label="Retry" type="submit" color="primary-btn"/>
   </div>
 </template>
 
@@ -112,7 +115,8 @@ export default {
       },
       step: 0,
       stepTotal:0,
-      touched:false
+      touched:false,
+      complete:null
     };
   },
   mounted() {
@@ -126,14 +130,24 @@ export default {
   methods:{
     onSubmit() {
       //TODO add submission function
+      console.log(this.form.accept)
+      console.log(this.touched)
       if(this.form.accept){
       
       this.loading = true;
 
-      this.$axios.post(`/api/quiz/submission/${this.id}/`, this.form)
+      let formData = this.form
+      delete formData['accept']
+      delete formData['success']
+      delete formData['error']
+
+      this.$axios.post(`/api/quiz/submission/${this.id}/`, formData)
         .then((e) => {
           this.form.error = false;
           this.form.success = true;
+          console.log(e);
+          if(e.data.result === 'competent') this.complete = true
+          else this.complete = false
         })
         .catch(() => {
           this.form.error = true;
@@ -145,31 +159,38 @@ export default {
       console.log(this.form)
     },
     onReset() {
-      console.log(this.form)
+      console.log("reset")
+      this.step = 0
+      this.stepTotal = 0
+      this.form.accept = null
+      this.formFunction()
+      this.complete = null
     },
     continueFunction: function(){
-      var nextPage = true
+      let nextPage = true
       this.formItems[this.step].data.map((item) =>{
         if(item.id){
-          var a = this.form[item.id]
+          let a = this.form[item.id]
           if(a || a == false || a == 0){
          }else {
           nextPage = false
           this.touched = true
-        }
-        }
+        }}
       })
       if (nextPage){ 
         this.touched = false
         if(this.step == this.stepTotal){
-          onSubmit()
+          if(!this.form.accept == true){
+            this.touched = true
+          }
+            // onSubmit()          
         }else this.step++
         
       }else console.log("please complete each question")
     },
     formFunction: function () {
-      var obj = {}
-      var objSelect = {}
+      let obj = {}
+      let objSelect = {}
       this.formItems.map((step) => {
         this.stepTotal++
         step.data.map((question)=>{
