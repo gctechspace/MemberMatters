@@ -28,24 +28,59 @@ class Inductionquiz(APIView):
     def get(self, request):
 
         objectQuerySet = InductionQuizzes.objects.all()
-        data = serializers.serialize('json', list(objectQuerySet), fields=('id', 'name', 'publish', 'data'))        
-        print(json.loads(data))
-        # TODO remove answers from json before return
-        return Response(json.loads(data))
-# TODO create submission function and route
-
+        requestData = serializers.serialize('json', list(objectQuerySet), fields=('id', 'name', 'publish', 'data'))  
+        data = json.loads(requestData)
+        # print(data[0]['fields']['data']['data'][0]['data'])
+        
+        # delete unpublished quizzes
+        for qi, quiz in enumerate(data):
+            if quiz['fields']['publish'] == False:
+                del data[qi]
+        
+        # foreach quiz
+        for qi, quiz in enumerate(data): 
+            
+            # foreach stepper in quiz
+            for di, step in enumerate(quiz['fields']['data']['data']):
+                # foreach question in stepper
+                for si, stepQ in enumerate(step['data']):
+                    # if answer key in object delete it
+                    if 'answer' in stepQ:
+                        del data[qi]['fields']['data']['data'][di]['data'][si]['answer']
+        # return santised object to client
+        return Response(data)
 class QuizSubmission(APIView):
     """
     post: validates quiz submission
     """
-    def get(self, request):
-        print({'test':10})
-        return Response({'test':10})
-
-
-    def post(self, request, quiz_id):
-        print({'test':10})
-        print(request.data['glasses'])
-        print(quiz_id)
-        return Response({'test':10})
     
+    def post(self, request, quiz_id):
+        
+        quiz = InductionQuizzes.objects.get(pk=quiz_id).data['data']
+        print(quiz[0]['data'])
+        formResults = {}
+        
+        for step in quiz:
+            for stepQ in step['data']:
+                if 'id' in stepQ:
+                 print(stepQ['id'])
+                 if stepQ['answer'].lower() == 'true':
+                    formResults[stepQ['id']] = True
+                 else:
+                    if stepQ['answer'].lower() == 'false':
+                        formResults[stepQ['id']] = False
+                    else:
+                        formResults[stepQ['id']] = stepQ['answer']
+                    
+        print(formResults)
+        print(request.data)
+        print(quiz_id)
+        
+        if formResults == request.data:
+            print(True)
+            return Response({'result':'competent'})
+
+        else: 
+            print(False) 
+            return Response({'result':'incompetent'})
+        
