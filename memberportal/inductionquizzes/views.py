@@ -39,11 +39,13 @@ class QuizSubmission(APIView):
     post: validates quiz submission
     """
     def get(self, request):
-        print(request)
-        return
+        print({'test':10})
+        return Response({'test':10})
 
 
-    def post(self, request):
-        print(request)
-        return
+    def post(self, request, quiz_id):
+        print({'test':10})
+        print(request.data['glasses'])
+        print(quiz_id)
+        return Response({'test':10})
     

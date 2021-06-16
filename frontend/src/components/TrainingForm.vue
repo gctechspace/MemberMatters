@@ -130,11 +130,10 @@ export default {
       
       this.loading = true;
 
-      this.$axios.post("/api/quiz/submission/", this.form)
-        .then(() => {
+      this.$axios.post(`/api/quiz/submission/${this.id}/`, this.form)
+        .then((e) => {
           this.form.error = false;
           this.form.success = true;
-          this.getMeetings();
         })
         .catch(() => {
           this.form.error = true;
