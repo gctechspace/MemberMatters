@@ -47,6 +47,7 @@ export default {
   clock: "mdi-clock",
   calendar: "mdi-calendar",
 
+  smile:"mdi-emoticon",
   comment: "mdi-comment",
   close: "mdi-close",
   success: "mdi-check",
