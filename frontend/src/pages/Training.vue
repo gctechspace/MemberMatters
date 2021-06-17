@@ -22,10 +22,9 @@
 <script>
 import icons from "../icons"
 import TrainingForm from "../components/TrainingForm"
-import { QMarkdown } from '@quasar/quasar-ui-qmarkdown'
 export default {
   name: "TrainingPage",
-  components: { TrainingForm, QMarkdown},
+  components: { TrainingForm},
   data() {
     return {
       interval: 0,

@@ -51,7 +51,7 @@
                 </div>
               </div>
 
-              <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm" :style="{borderStyle: 'solid', borderColor: `${(touched && !form[formItem.id] == null) ? 'red' : 'transparent'}`,  marginTop:'10px', borderWidth:'1px', borderRadius:'16px'}">
+              <div v-if="formItem.type == 'truefalse'" class="q-px-sm q-pt-sm" :style="{borderStyle: 'solid', borderColor: `${(touched && form[formItem.id]== null) ? 'red' : 'transparent'}`,  marginTop:'10px', borderWidth:'1px', borderRadius:'16px'}">
                 <q-img
                 v-if="formItem.image"
                 :src="formItem.image"
@@ -92,7 +92,7 @@
 
 <script>
 import icons from "../icons"
-import { QMarkdown } from '@quasar/quasar-ui-qmarkdown'
+import { QMarkdown } from "@quasar/quasar-ui-qmarkdown"
 export default {
   name: "TrainingForm",
   props: {
@@ -107,7 +107,6 @@ export default {
       failed: false,
       error: false,
       errorExists: false,
-      complete: false,
       buttonLoading: false,
       isPwd: true,
       form: {
@@ -137,16 +136,16 @@ export default {
       this.loading = true;
 
       let formData = this.form
-      delete formData['accept']
-      delete formData['success']
-      delete formData['error']
+      delete formData["accept"]
+      delete formData["success"]
+      delete formData["error"]
 
       this.$axios.post(`/api/quiz/submission/${this.id}/`, formData)
         .then((e) => {
           this.form.error = false;
           this.form.success = true;
           console.log(e);
-          if(e.data.result === 'competent') this.complete = true
+          if(e.data.result === "competent") this.complete = true
           else this.complete = false
         })
         .catch(() => {
