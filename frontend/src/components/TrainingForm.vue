@@ -64,7 +64,11 @@
               </div>
 
               <div v-if="formItem.type == 'text'" class="q-px-sm q-pt-sm">
-                <q-markdown :src="formItem.text"></q-markdown>
+                <q-markdown :src="formItem.src"></q-markdown>
+              </div>
+              <!-- Youtube embed example https://www.youtube.com/embed/dQw4w9WgXcQ -->
+              <div v-if="formItem.type == 'video'" class="q-px-sm q-pt-sm">
+                <q-video :ratio="16/9" :src="formItem.src" />
               </div>
             </div>
           </div>
