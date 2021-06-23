@@ -100,3 +100,12 @@ Follow along with progress here: https://ap-southeast-2.console.aws.amazon.com/c
 
 If something doesn't work right, CloudFormation will time out after 30 or so minutes. To make that process quicker you can scale down the number of instances (ECS -> Clusters -> open Cluster -> open Service -> click Update -> next,next,change Desired Count to 0)
 
+# Add secrets
+
+```bash
+aws-vault exec gctechspace-prod --
+AWS_REGION=ap-southeast-2
+copilot secret init
+# follow prompts, edit manifest.yml file with new secret ENV variable
+copilot svc deploy
+```
